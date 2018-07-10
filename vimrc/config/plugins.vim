@@ -40,6 +40,8 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'                               " Asynchronous linter FTW!
 Plug 'Chiel92/vim-autoformat'
 Plug 'tomasiser/vim-code-dark'
+Plug 'mhinz/vim-sayonara'                     " Smart buffer/window deletion
+Plug 'mhinz/vim-startify'                     " Pretty start screen
 
 " Haskell
 " -----------------------------------------------
@@ -146,6 +148,23 @@ nnoremap <silent> <Leader><Enter> :call fzf#run({
 \   'options': '+m',
 \   'down':    len(<sid>buflist()) + 2
 \ })<CR>
+
+" Customize fzf colors to match your color scheme
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
+
 
 " Vim autoclose
 " --------------------
@@ -306,7 +325,7 @@ let g:NERDCustomDelimiters = {
 " let g:airline_left_sep=''
 " let g:airline_right_sep=''
 let g:tender_airline = 1
-let g:airline_theme = 'onedark'
+let g:airline_theme = 'base16_eighties'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 let airline#extensions#tabline#buffer_nr_show = 1
