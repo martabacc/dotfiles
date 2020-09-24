@@ -4,7 +4,7 @@
 
 [core]
   excludesfile = ~/.gitignore
-	pager = diff-so-fancy | less --tabs=4 -R
+  pager = diff-so-fancy | less --tabs=4 -R
 
 [status]
   showUntrackedFiles = all
@@ -58,6 +58,7 @@
   cp   = cherry-pick
   d    = diff
   db   = diff HEAD~1..HEAD
+  dbf  = diff HEAD~1..HEAD --name-status
   dc   = diff --cached
   dm   = diff master..HEAD
   l    = log --oneline --decorate --color --graph

@@ -1,4 +1,8 @@
-let mapleader = ' '
+" https://www.reddit.com/r/vim/comments/39jtib/what_is_the_difference_between_mapleader_and/
+" Basically if someone says <LocalLeader> then it will use
+" the key in `maplocalleader`, otherwise <Leader> maps to key in `mapleader`
+let g:mapleader = "\<Space>"
+let g:maplocalleader = ','
 
 " Map <C-w> to <Space>
 nnoremap <silent> <leader>w <C-w>
@@ -77,13 +81,77 @@ nnoremap <F6> :NumbersToggle<CR>
 nnoremap <F7> :NumbersOnOff<CR>
 nnoremap <F8> :call NERDTreeToggleInCurrentDirectory()<CR>
 nnoremap <F9> :TagbarToggle<CR>
-
-" Fugitive git commit mapping
-nnoremap <leader>gc :Gc<CR>
-nnoremap <leader>gw :Gwrite<CR>
-nnoremap <leader>gb :Gblame<CR>
-nnoremap <leader>gs :Gstatus<CR>
-
 " Copy relative filepath (based on cwd) of current buffer
 nnoremap <F10> :let @+ = expand("%")<CR>
+nnoremap <F12> :call CloseHiddenBuffers()<CR>
 
+" For easier understanding: basically <Plug> is an alias to another mapping
+" so we need to use `nmap` instead of `nnoremap` because we want
+" `gd` to be mapped to `(coc-definition)` and `(coc-definition)` to another
+" mapping:
+" gd -> (coc-definition) -> <some other function expression>
+" nnoremap gd <Plug>(coc-definition)
+" Somehow `gd` does not work for `coc-rust-analyzer` so we'll just use `ff`.
+nnoremap gd :call CocActionAsync('jumpDefinition')<CR>
+nnoremap gr :call CocActionAsync('jumpReferences')<CR>
+
+
+" Use <C-l> for trigger snippet expand.
+" inoremap <C-l> <Plug>(coc-snippets-expand)
+
+
+" Register which_key_map
+" ------------------------------------
+call which_key#register('<Space>', "g:which_key_map")
+nnoremap <silent> <leader>\      :<c-u>WhichKey '<Space>'<CR>
+nnoremap <silent> <localleader>\ :<c-u>WhichKey  ','<CR>
+
+let g:which_key_map = {}
+let g:which_key_map.m = { 'name': 'Custom Leader Mapping' }
+
+" Git mappings
+" ------------------------------------
+let g:which_key_map.m.g = {
+  \ 'name' : 'Git',
+  \ 'c': ['Gc', 'Git Commit'],
+  \ 'w': ['Gwrite', 'Git Write'],
+  \ 'b': ['Gblame', 'Git Blame'],
+  \ 's': ['Gstatus', 'Git Status']
+\}
+
+" Language specific mappings
+" ------------------------------------
+let g:which_key_map.m.l = { 'name': 'Language' }
+let g:which_key_map.m.l.p = {
+  \ 'name': 'php',
+  \ 'b': ['phpactor#ClassExpand()', 'ExpandClass'],
+  \ 'c': ['phpactor#CopyFile()', 'Copy file'],
+  \ 'd': ['phpactor#GotoDefinition()', 'Go to definition'],
+  \ 'e': ['phpactor#mxtractMethod()', 'Extract method'],
+  \ 'f': ['phpactor#FindReferences()', 'Find references'],
+  \ 'k': ['phpactor#ContextMenu()', 'Menu'],
+  \ 'h': ['phpactor#Hover()', 'Hover'],
+  \ 'i': ['phpactor#ImportMissingClasses()', 'Import missing classes'],
+  \ 'l': ['phpactor#ClassNew()', 'New class'],
+  \ 'm': ['phpactor#MoveFile()', 'Move file'],
+  \ 'n': ['phpactor#Navigate()', 'Navigate'],
+  \ 't': ['phpactor#Transform()', 'Complete implementation'],
+  \ 'u': ['phpactor#UseAdd()', 'Import class/trait under cursor'],
+\}
+
+let g:which_key_map.i = {
+  \ 'name': 'IDE' ,
+  \ 'g': {
+    \ 'name': 'Navigation',
+    \ 'd': ['<Plug>(coc-definition)', 'Go to definition'],
+    \ 'y': ['<Plug>(coc-type-definition)', 'Go to type definition'],
+    \ 'i': ['<Plug>(coc-implementation)', 'Go to implementation'],
+    \ 'r': ['<Plug>(coc-references)', 'Go to references'],
+    \ 'n': ['<Plug>(coc-diagnostic-next)', 'Next diagnostic'],
+    \ 'p': ['<Plug>(coc-diagnostic-prev)', 'Previous diagnostic'],
+  \ },
+  \ 'r' : {
+    \ 'name': 'Refactor',
+    \ 'r': ['<Plug>(coc-rename)', 'Rename symbol'],
+  \ },
+\}

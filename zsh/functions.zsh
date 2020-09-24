@@ -33,22 +33,6 @@ function reload_xcode_plugins {
   curl -s https://raw.githubusercontent.com/ForkPanda/RescueXcodePlug-ins/master/RescueXcode.sh | sh
 }
 
-# Load nvm explicitly only when we need it. It makes zsh slow
-function load_nvm {
-  # On macOS we have brew
-  if test "$(which brew)"; then
-    NVM_INSTALL=$(brew --prefix nvm)
-
-    if [ -d "$NVM_INSTALL" ]; then
-      export NVM_DIR="$HOME/.nvm"
-      . "$NVM_INSTALL/nvm.sh"
-    fi
-  else
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
-  fi
-}
-
 # https://gist.github.com/XVilka/8346728
 function print_colors {
   awk 'BEGIN {
@@ -99,15 +83,15 @@ function print_256_colors {
 }
 
 function set_login_bg_with_current_wallpaper {
-  os="High Sierra"
+  os="Mojave"
   wallpaper_path=$(sqlite3 ~/Library/Application\ Support/Dock/desktoppicture.db 'select * from data limit 1 offset (select (count(*) - 1) from data)')
 
   # https://superuser.com/a/474199
   wallpaper_path=$(eval echo "$wallpaper_path")
 
   os_pictures_dir="/Library/Desktop Pictures"
-  default_wallpaper="$os_pictures_dir/$os.jpg"
-  backup_path="$os_pictures_dir/$os - Backup.jpg"
+  default_wallpaper="$os_pictures_dir/$os.heic"
+  backup_path="$os_pictures_dir/$os - Backup.heic"
 
   if [ ! -f "$backup_path" ]
   then
@@ -116,4 +100,21 @@ function set_login_bg_with_current_wallpaper {
 
   echo "Replacing $default_wallpaper with $wallpaper_path"
   cp "$wallpaper_path" "$default_wallpaper"
+}
+
+# Function to convert hex to 256 term color.
+# Usage:
+# hex_to_256_color A52A2A
+# hex_to_256_color "#A52A2A"
+#
+# Source: https://gist.github.com/mhulse/b11e568260fb8c3aa2a8
+function hex_to_256_color() {
+  hex=$1
+  if [[ $hex == "#"* ]]; then
+    hex=$(echo $1 | awk '{print substr($0,2)}')
+  fi
+  r=$(printf '0x%0.2s' "$hex")
+  g=$(printf '0x%0.2s' ${hex#??})
+  b=$(printf '0x%0.2s' ${hex#????})
+  echo -e `printf "%03d" "$(((r<75?0:(r-35)/40)*6*6+(g<75?0:(g-35)/40)*6+(b<75?0:(b-35)/40)+16))"`
 }
